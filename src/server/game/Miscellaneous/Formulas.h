@@ -117,7 +117,7 @@ namespace Trinity
             uint32 baseGain;
             uint32 nBaseExp;
 
-            switch (content)
+            /*switch (content)
             {
                 case CONTENT_1_60:
                     nBaseExp = 45;
@@ -132,7 +132,8 @@ namespace Trinity
                     TC_LOG_ERROR("misc", "BaseGain: Unsupported content level %u", content);
                     nBaseExp = 45;
                     break;
-            }
+            }*/
+			nBaseExp = 45;
 
             if (mob_level >= pl_level)
             {

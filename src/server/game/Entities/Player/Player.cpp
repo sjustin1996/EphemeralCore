@@ -16,6 +16,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Transmogrification.h"
 #include "Player.h"
 #include "AccountMgr.h"
 #include "AchievementMgr.h"
@@ -12078,7 +12079,11 @@ void Player::SetVisibleItemSlot(uint8 slot, Item* pItem)
 {
     if (pItem)
     {
-        SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * 2), pItem->GetEntry());
+        //SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * 2), pItem->GetEntry());
+		if (uint32 entry = sTransmogrification->GetFakeEntry(pItem))
+			SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * 2), entry);
+		else
+			SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * 2), pItem->GetEntry());
         SetUInt16Value(PLAYER_VISIBLE_ITEM_1_ENCHANTMENT + (slot * 2), 0, pItem->GetEnchantmentId(PERM_ENCHANTMENT_SLOT));
         SetUInt16Value(PLAYER_VISIBLE_ITEM_1_ENCHANTMENT + (slot * 2), 1, pItem->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT));
     }
@@ -12207,6 +12212,7 @@ void Player::MoveItemFromInventory(uint8 bag, uint8 slot, bool update)
 {
     if (Item* it = GetItemByPos(bag, slot))
     {
+		sTransmogrification->DeleteFakeEntry(this, it);
         ItemRemovedQuestCheck(it->GetEntry(), it->GetCount());
         RemoveItem(bag, slot, update);
         it->SetNotRefundable(this, false);
@@ -24550,18 +24556,23 @@ void Player::StoreLootItem(uint8 lootSlot, Loot* loot)
 
 uint32 Player::CalculateTalentsPoints() const
 {
-    uint32 base_talent = getLevel() < 10 ? 0 : getLevel()-9;
+	uint32 talentPointsForLevel = getLevel() < 10 ? 0 : getLevel() - 9;
+	talentPointsForLevel += m_questRewardTalentCount;
+	return uint32(talentPointsForLevel * sWorld->getRate(RATE_TALENT));
+	/*
+	uint32 base_talent = getLevel() < 10 ? 0 : getLevel() - 9;
 
-    if (getClass() != CLASS_DEATH_KNIGHT || GetMapId() != 609)
-        return uint32(base_talent * sWorld->getRate(RATE_TALENT));
+	if (getClass() != CLASS_DEATH_KNIGHT || GetMapId() != 609)
+	return uint32(base_talent * sWorld->getRate(RATE_TALENT));
 
-    uint32 talentPointsForLevel = getLevel() < 56 ? 0 : getLevel() - 55;
-    talentPointsForLevel += m_questRewardTalentCount;
+	uint32 talentPointsForLevel = getLevel() < 56 ? 0 : getLevel() - 55;
+	talentPointsForLevel += m_questRewardTalentCount;
 
-    if (talentPointsForLevel > base_talent)
-        talentPointsForLevel = base_talent;
+	if (talentPointsForLevel > base_talent)
+	talentPointsForLevel = base_talent;
 
-    return uint32(talentPointsForLevel * sWorld->getRate(RATE_TALENT));
+	return uint32(talentPointsForLevel * sWorld->getRate(RATE_TALENT));
+	*/
 }
 
 bool Player::CanFlyInZone(uint32 mapid, uint32 zone) const
