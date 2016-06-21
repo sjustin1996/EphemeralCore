@@ -4725,22 +4725,32 @@ void Player::ResurrectPlayer(float restore_percent, bool applySickness)
     //Characters level 20 and up suffer from ten minutes of sickness.
     int32 startLevel = sWorld->getIntConfig(CONFIG_DEATH_SICKNESS_LEVEL);
 
-    if (int32(getLevel()) >= startLevel)
-    {
-        // set resurrection sickness
-        CastSpell(this, 15007, true);
+	// Modify resurrection sickness -> Level 21-60 (1-30 min)
 
-        // not full duration
-        if (int32(getLevel()) < startLevel+9)
-        {
-            int32 delta = (int32(getLevel()) - startLevel + 1)*MINUTE;
+    //if (int32(getLevel()) >= startLevel) {
+	if (int32(getLevel()) >= 20) {
+		// set resurrection sickness
+		CastSpell(this, 15007, true);
 
-            if (Aura* aur = GetAura(15007, GetGUID()))
-            {
-                aur->SetDuration(delta*IN_MILLISECONDS);
-            }
-        }
-    }
+		// not full duration
+		//if (int32(getLevel()) < startLevel+9) {
+		//int32 delta = (int32(getLevel()) - /*startLevel*/ 20 + 1)*MINUTE;
+
+		int32 delta = (int32(getLevel()) - 20);
+		if (delta < 0)
+			delta = 0;
+		if (delta > 30)
+			delta = 30;
+
+		delta *= MINUTE;
+
+		if (Aura* aur = GetAura(15007, GetGUID()))
+		{
+			aur->SetDuration(delta*IN_MILLISECONDS);
+		}
+	}
+        //}
+    //}
 }
 
 void Player::RemoveGhoul()
