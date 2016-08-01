@@ -135,8 +135,8 @@ typedef std::unordered_map<ObjectGuid, uint32> TransmogMapType;
 typedef std::map<uint8, uint32> PresetslotMapType;
 struct PresetData
 {
-	std::string name;
-	PresetslotMapType slotMap; //slotMap[slotId] = entry
+    std::string name;
+    PresetslotMapType slotMap; // slotMap[slotId] = entry
 };
 typedef std::map<uint8, PresetData> PresetMapType;
 #endif
@@ -2290,9 +2290,9 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         std::string GetMapAreaAndZoneString() const;
         std::string GetCoordsMapAreaAndZoneString() const;
 
-		TransmogMapType transmogMap; // transmogMap[iGUID] = entry
+        TransmogMapType transmogMap; // transmogMap[iGUID] = entry
 #ifdef PRESETS
-		PresetMapType presetMap; // presetMap[presetId] = presetData
+        PresetMapType presetMap; // presetMap[presetId] = presetData
 #endif
 
     protected:
