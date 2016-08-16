@@ -12087,7 +12087,6 @@ void Player::SetVisibleItemSlot(uint8 slot, Item* pItem)
     {
         if (uint32 entry = sTransmogrification->GetFakeEntry(pItem))
             SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * 2), entry);
-        else
 		else
             SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * 2), pItem->GetEntry());
         SetUInt16Value(PLAYER_VISIBLE_ITEM_1_ENCHANTMENT + (slot * 2), 0, pItem->GetEnchantmentId(PERM_ENCHANTMENT_SLOT));

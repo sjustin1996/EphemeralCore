@@ -921,7 +921,6 @@ class spell_gen_clone_weapon_aura : public SpellScriptLoader
                                 if (uint32 entry = sTransmogrification->GetFakeEntry(mainItem))
                                     target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, entry);
                                 else
-								else
                                     target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, mainItem->GetEntry());
                             }
                         }
@@ -941,7 +940,6 @@ class spell_gen_clone_weapon_aura : public SpellScriptLoader
                                 if (uint32 entry = sTransmogrification->GetFakeEntry(offItem))
                                     target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 1, entry);
                                 else
-								else
                                     target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 1, offItem->GetEntry());
                             }
                         }
@@ -960,7 +958,6 @@ class spell_gen_clone_weapon_aura : public SpellScriptLoader
                                 if (uint32 entry = sTransmogrification->GetFakeEntry(rangedItem))
                                     target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 2, entry);
                                 else
-								else
                                     target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 2, rangedItem->GetEntry());
                             }
                         }
