@@ -485,9 +485,15 @@ bool Unit::IsWithinMeleeRange(Unit const* obj) const
     float dz = GetPositionZMinusOffset() - obj->GetPositionZMinusOffset();
     float distsq = dx*dx + dy*dy + dz*dz;
 
-    float maxdist = GetCombatReach() + obj->GetCombatReach() + 4.0f / 3.0f;
+    float maxdist = GetMeleeRange(obj);
 
     return distsq <= maxdist * maxdist;
+}
+
+float Unit::GetMeleeRange(Unit const* target) const
+{
+    float range = GetCombatReach() + target->GetCombatReach() + 4.0f / 3.0f;
+    return std::max(range, NOMINAL_MELEE_RANGE);
 }
 
 void Unit::GetRandomContactPoint(const Unit* obj, float &x, float &y, float &z, float distance2dMin, float distance2dMax) const
@@ -4289,6 +4295,20 @@ void Unit::RemoveAllAurasExceptType(AuraType type1, AuraType type2)
     }
 }
 
+void Unit::RemoveAllGroupBuffsFromCaster(ObjectGuid casterGUID)
+{
+    for (AuraMap::iterator iter = m_ownedAuras.begin(); iter != m_ownedAuras.end();)
+    {
+        Aura* aura = iter->second;
+        if (aura->GetCasterGUID() == casterGUID && aura->GetSpellInfo()->IsGroupBuff())
+        {
+            RemoveOwnedAura(iter);
+            continue;
+        }
+        ++iter;
+    }
+}
+
 void Unit::DelayOwnedAuras(uint32 spellId, ObjectGuid caster, int32 delaytime)
 {
     AuraMapBoundsNonConst range = m_ownedAuras.equal_range(spellId);
@@ -7773,7 +7793,7 @@ bool Unit::HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* trigg
     if (triggerEntry == NULL)
     {
         // Don't cast unknown spell
-        TC_LOG_ERROR("entities.unit", "Unit::HandleProcTriggerSpell: Spell %u (effIndex: %u) has unknown TriggerSpell %u. Unhandled custom case?", auraSpellInfo->Id, triggeredByAura->GetEffIndex(), trigger_spell_id);
+        TC_LOG_ERROR("entities.unit.handleproctriggerspell", "Unit::HandleProcTriggerSpell: Spell %u (effIndex: %u) has unknown TriggerSpell %u. Unhandled custom case?", auraSpellInfo->Id, triggeredByAura->GetEffIndex(), trigger_spell_id);
         return false;
     }
 
