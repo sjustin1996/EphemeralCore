@@ -16,15 +16,14 @@
  */
 
 // This is where scripts' loading functions should be declared:
+void AddSC_REFORGER_NPC();
 void AddSC_Transmogrification();
 
 
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
-
-void AddSC_Transmogrification();
-
 void AddCustomScripts()
 {
     AddSC_Transmogrification();
+    AddSC_REFORGER_NPC();
 }
