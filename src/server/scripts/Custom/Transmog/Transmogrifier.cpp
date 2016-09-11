@@ -53,7 +53,7 @@ namespace
         bool OnGossipHello(Player* player, Creature* creature) override
         {
             WorldSession* session = player->GetSession();
-			if (sTransmogrification->EnableTransmogInfo)
+            if (sTransmogrification->EnableTransmogInfo)
                 AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, "|TInterface/ICONS/INV_Misc_Book_11:30:30:-18:0|tHow transmogrification works", EQUIPMENT_SLOT_END + 9, 0);
             for (uint8 slot = EQUIPMENT_SLOT_START; slot < EQUIPMENT_SLOT_END; ++slot)
             {
@@ -77,7 +77,7 @@ namespace
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             WorldSession* session = player->GetSession();
             switch (sender)
             {
@@ -273,7 +273,7 @@ namespace
 #ifdef PRESETS
         bool OnGossipSelectCode(Player* player, Creature* creature, uint32 sender, uint32 action, const char* code) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             if (sender || action)
                 return true; // should never happen
             if (!sTransmogrification->EnableSets)
