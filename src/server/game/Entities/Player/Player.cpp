@@ -14059,6 +14059,7 @@ void Player::PrepareGossipMenu(WorldObject* source, uint32 menuId /*= 0*/, bool 
                     break;
                 }
                 case GOSSIP_OPTION_LEARNDUALSPEC:
+                case GOSSIP_OPTION_DUALSPEC_INFO:
                     if (!(GetSpecsCount() == 1 && creature->isCanTrainingAndResetTalentsOf(this) && !(getLevel() < sWorld->getIntConfig(CONFIG_MIN_DUALSPEC_LEVEL))))
                         canTalk = false;
                     break;
@@ -14240,6 +14241,7 @@ void Player::OnGossipSelect(WorldObject* source, uint32 gossipListId, uint32 men
     switch (gossipOptionId)
     {
         case GOSSIP_OPTION_GOSSIP:
+        case GOSSIP_OPTION_DUALSPEC_INFO:
         {
             if (menuItemData->GossipActionPoi)
                 PlayerTalkClass->SendPointOfInterest(menuItemData->GossipActionPoi);
@@ -14281,8 +14283,8 @@ void Player::OnGossipSelect(WorldObject* source, uint32 gossipListId, uint32 men
                 CastSpell(this, 63680, true, nullptr, nullptr, GetGUID());
                 CastSpell(this, 63624, true, nullptr, nullptr, GetGUID());
 
-                // Should show another Gossip text with "Congratulations..."
-                PlayerTalkClass->SendCloseGossip();
+                PrepareGossipMenu(source, menuItemData->GossipActionMenuId);
+                SendPreparedGossip(source);
             }
             break;
         case GOSSIP_OPTION_UNLEARNTALENTS:
@@ -15098,10 +15100,7 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
 
     RemoveActiveQuest(quest_id, false);
     if (quest->CanIncreaseRewardedQuestCounters())
-    {
-        m_RewardedQuests.insert(quest_id);
-        m_RewardedQuestsSave[quest_id] = QUEST_DEFAULT_SAVE_TYPE;
-    }
+        SetRewardedQuest(quest_id);
 
     // StoreNewItem, mail reward, etc. save data directly to the database
     // to prevent exploitable data desynchronisation we save the quest status to the database too
@@ -15155,6 +15154,12 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
     SetCanDelayTeleport(false);
 
     sScriptMgr->OnQuestStatusChange(this, quest_id);
+}
+
+void Player::SetRewardedQuest(uint32 quest_id)
+{
+    m_RewardedQuests.insert(quest_id);
+    m_RewardedQuestsSave[quest_id] = QUEST_DEFAULT_SAVE_TYPE;
 }
 
 void Player::FailQuest(uint32 questId)
