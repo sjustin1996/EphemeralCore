@@ -113,8 +113,8 @@ static bool IsReforgable(Item* invItem, Player* player)
     const ItemTemplate* pProto = invItem->GetTemplate();
     //if (pProto->ItemLevel < 200)
     //    return false;
-    //if (pProto->Quality == ITEM_QUALITY_HEIRLOOM) // block heirlooms necessary?
-    //    return false;
+    if (pProto->Quality == ITEM_QUALITY_HEIRLOOM) // block heirlooms necessary?
+        return false;
     if (!pProto->StatsCount || pProto->StatsCount >= MAX_ITEM_PROTO_STATS) // Mandatory! Do NOT remove or edit
         return false;
     if (!player->reforgeMap.empty() && player->reforgeMap.find(invItem->GetGUID().GetCounter()) != player->reforgeMap.end()) // Mandatory! Do NOT remove or edit
